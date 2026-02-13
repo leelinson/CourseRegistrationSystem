@@ -14,11 +14,6 @@ public class MainPage {
 		// Req 08, Req 12: Load courses (from .ser or CSV) and students (from .ser)
 		ArrayList<Course> courses = FileManager.loadCourses();
 		ArrayList<Student> students = FileManager.loadStudents();
-		// Rebuild each student's course list and registered list after deserialization
-		for (Student s : students) {
-			s.setCourseList(courses);
-			s.rebuildRegisteredCourses();
-		}
 
 		Scanner kb = new Scanner(System.in);
 		Admin admin = new Admin("Admin", "Admin001", "Admin", "User", courses, students);
@@ -50,7 +45,7 @@ public class MainPage {
 				kb.close();
 				return;
 			}
-			runStudentMenu(kb, student);
+			runStudentMenu(kb, student, courses);
 		} else {
 			System.out.println("Invalid choice.");
 		}
@@ -193,12 +188,12 @@ public class MainPage {
 		String first = kb.nextLine().trim();
 		System.out.print("Last name: ");
 		String last = kb.nextLine().trim();
-		Student s = new Student(username, password, first, last, courses);
+		Student s = new Student(username, password, first, last);
 		admin.registerStudent(s);
 		System.out.println("Student registered.");
 	}
 
-	private static void runStudentMenu(Scanner kb, Student student) {
+	private static void runStudentMenu(Scanner kb, Student student, ArrayList<Course> courses) {
 		boolean running = true;
 		while (running) {
 			student.displayMenu();
@@ -208,10 +203,10 @@ public class MainPage {
 
 			switch (choice) {
 			case 1:
-				student.viewAllCourses();
+				student.viewAllCourses(courses);
 				break;
 			case 2:
-				student.viewOpenCourses();
+				student.viewOpenCourses(courses);
 				break;
 			case 3:
 				System.out.print("Course name: ");
@@ -223,7 +218,7 @@ public class MainPage {
 				String f = kb.nextLine().trim();
 				System.out.print("Your last name: ");
 				String l = kb.nextLine().trim();
-				student.registerCourse(cName, sec, f, l);
+				student.registerCourse(courses, cName, sec, f, l);
 				break;
 			case 4:
 				System.out.print("Course name: ");
@@ -231,10 +226,10 @@ public class MainPage {
 				System.out.print("Course section: ");
 				int wSec = readInt(kb);
 				kb.nextLine();
-				student.withdrawCourse(wName, wSec, student.getFirstName(), student.getLastName());
+				student.withdrawCourse(courses, wName, wSec, student.getFirstName(), student.getLastName());
 				break;
 			case 5:
-				student.viewRegisteredCourses();
+				student.viewRegisteredCourses(courses);
 				break;
 			case 6:
 				running = false;
