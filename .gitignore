@@ -3,3 +3,10 @@ bin/
 *.ser
 .settings/
 .DS_Store
+
+### IntelliJ IDEA ###
+.idea/
+out/
+
+### VS Code ###
+.vscode/
